@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "./cursor"
-require_relative "./bfs"
+require_relative "cursor"
+require_relative "bfs"
 
 module Aoc
   # A grid is a two dimensional array of values.  The grid is indexed by
@@ -24,7 +24,7 @@ module Aoc
 
     def self.from_string(string)
       lines = string.each_line.map(&:chomp)
-      width = lines.max { |line| line.size || 0 }.size
+      width = lines.map { |l| l.size || 0 }.max
       height = lines.size
 
       Grid.new(width, height) do |x, y|
@@ -60,28 +60,21 @@ module Aoc
       Cursor.new(self, x, y)
     end
 
-    def find_regions(regex)
-      regions = []
-      region = nil
+    def each_row
       @grid.each_with_index do |row, y|
-        row.each_with_index do |ch, x|
-          if ch.match(regex)
-            if region
-              region << cursor(x, y)
-            else
-              region = [cursor(x, y)]
-            end
-          elsif region
-            regions << region
-            region = nil
-          end
-        end
-        if region
-          regions << region
-          region = nil
-        end
+        return to_enum(:each_row) unless block_given?
+
+        yield row, y
       end
-      regions.map { |region| Region.new(region) }
+    end
+
+    def find_horizontal_regions(regex)
+      each_row.map do |row, y|
+        row.map.with_index { |_ch, x| cursor(x, y) }
+           .chunk { |cursor| !cursor.to_s.match(regex).nil? }
+           .filter { |match, _cursors| match }
+           .map { |_match, cursors| Region.new(cursors) }
+      end.flatten
     end
 
     def find_cursors(regex)
@@ -101,22 +94,6 @@ module Aoc
           result[cursor.x, cursor.y] = (num % 10).to_s
           num += 1
         end
-      end
-    end
-
-    def animate_path(path)
-      path.each do |cursor|
-        temp = clone
-        temp[cursor.x, cursor.y] = "*"
-        print "\033[2J\033[0;0H"
-        puts temp
-        sleep 0.3
-      end
-    end
-
-    def to_s
-      @grid.reduce("") do |acc, row|
-        "#{acc}#{row.reduce("") { |acc2, col| acc2 + col.to_s }}\n"
       end
     end
   end

@@ -62,7 +62,7 @@ module Aoc
     end
 
     def move(direction, wrap: false)
-      result = safe_move(direction, wrap: wrap)
+      result = safe_move(direction, wrap:)
       raise Aoc::Error, "Invalid coordinate after cursor #{x},#{y} moving #{direction}" unless result
 
       result
@@ -85,12 +85,12 @@ module Aoc
     end
 
     def neighbors(wrap: false)
-      restricted_neighbors(DIRECTIONS, wrap: wrap)
+      restricted_neighbors(DIRECTIONS, wrap:)
     end
 
     def restricted_neighbors(directions, wrap: false)
       directions.filter_map do |direction|
-        safe_move(direction, wrap: wrap)
+        safe_move(direction, wrap:)
       end
     end
 
