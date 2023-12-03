@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "set"
+
 module Aoc
   # A grid is a two dimensional array of values.  The grid is indexed by
   class Cursor

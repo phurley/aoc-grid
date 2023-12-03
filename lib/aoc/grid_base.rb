@@ -19,13 +19,23 @@ module Aoc
     end
 
     def self.from_file(fname)
-      lines = File.readlines(fname).map(&:chomp)
+      from_string(File.read(fname))
+    end
+
+    def self.from_string(string)
+      lines = string.each_line.map(&:chomp)
       width = lines.max { |line| line.size || 0 }.size
       height = lines.size
 
       Grid.new(width, height) do |x, y|
         lines[y][x]
       end
+    end
+
+    def at(x, y)
+      raise Aoc::Error, "Invalid coordinate #{x},#{y}" unless valid?(x, y)
+
+      @grid[y][x]
     end
 
     def [](x, y)
@@ -48,6 +58,40 @@ module Aoc
       raise Aoc::Error, "Invalid coordinate #{x},#{y}" unless valid?(x, y)
 
       Cursor.new(self, x, y)
+    end
+
+    def find_regions(regex)
+      regions = []
+      region = nil
+      @grid.each_with_index do |row, y|
+        row.each_with_index do |ch, x|
+          if ch.match(regex)
+            if region
+              region << cursor(x, y)
+            else
+              region = [cursor(x, y)]
+            end
+          elsif region
+            regions << region
+            region = nil
+          end
+        end
+        if region
+          regions << region
+          region = nil
+        end
+      end
+      regions.map { |region| Region.new(region) }
+    end
+
+    def find_cursors(regex)
+      cursors = []
+      @grid.each_with_index do |row, y|
+        row.each_with_index do |ch, x|
+          cursors << cursor(x, y) if ch.match(regex)
+        end
+      end
+      cursors
     end
 
     def add_path(path)

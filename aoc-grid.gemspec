@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/aocgrid/version"
+require_relative "lib/aoc/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "aocgrid"
-  spec.version = Aocgrid::VERSION
+  spec.name = "aoc-grid"
+  spec.version = Aoc::Grid::VERSION
   spec.authors = ["Patrick Hurley"]
   spec.email = ["phurley@invoca.com"]
 
