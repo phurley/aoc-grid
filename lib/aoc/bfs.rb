@@ -9,8 +9,8 @@ module Aoc
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/PerceivedComplexity
-    def self.solve(from, to, directions, &valid)
-      options = from.restricted_neighbors(directions).select { |pos| valid.call(pos, [from]) }.map { |pos| [from, pos] }
+    def self.solve(from, to, directions)
+      options = from.restricted_neighbors(directions).select { |pos| yield(pos, [from]) }.map { |pos| [from, pos] }
       visited = Set.new
       visited.add(from)
 
@@ -23,7 +23,7 @@ module Aoc
 
         visited.add(node)
         options += node.restricted_neighbors(directions)
-                       .select { |pos| !visited.include?(pos) && valid.call(pos, path) }
+                       .select { |pos| !visited.include?(pos) && yield(pos, path) }
                        .map { |pos| [*path, pos] }
       end
 

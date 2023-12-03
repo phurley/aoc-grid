@@ -11,8 +11,8 @@ module Aoc
     def initialize(width, height, default: nil, &block)
       @width = width
       @height = height
-      @grid = if block_given?
-                Array.new(height) { |y| Array.new(width) { |x| block.call(x, y) } }
+      @grid = if block
+                Array.new(height) { |y| Array.new(width) { |x| yield(x, y) } }
               else
                 Array.new(height) { Array.new(width, default) }
               end

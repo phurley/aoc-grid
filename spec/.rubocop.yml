@@ -28,3 +28,7 @@ Naming/MethodParameterName:
 
 Metrics/BlockLength:
   Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+  

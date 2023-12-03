@@ -16,14 +16,15 @@ PUZZLE_INPUT = <<~INPUT
 INPUT
 
 RSpec.describe Aoc::Grid do
-  subject(:grid) { Aoc::Grid.from_string(PUZZLE_INPUT) }
+  subject(:grid) { described_class.from_string(PUZZLE_INPUT) }
+
   let(:numbers) { subject.find_horizontal_regions(/\d/) }
   let(:number_list) { numbers.map(&:to_s) }
 
-  context "puzzle grid" do
+  context "with a puzzle grid" do
     it "has a width and height" do
-      expect(subject.width).to eq(10)
-      expect(subject.height).to eq(10)
+      expect(grid.width).to eq(10)
+      expect(grid.height).to eq(10)
     end
 
     it "has numeric regions" do
