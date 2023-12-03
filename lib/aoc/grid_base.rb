@@ -68,6 +68,16 @@ module Aoc
       end
     end
 
+    def each_column(&)
+      return to_enum(:each_column) unless block_given?
+
+      width.times do |x|
+        height.times do |y|
+          yield cursor(x, y)
+        end
+      end
+    end
+
     def find_horizontal_regions(regex)
       each_row.map do |row, y|
         row.map.with_index { |_ch, x| cursor(x, y) }
