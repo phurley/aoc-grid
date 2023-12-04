@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Hi Pat</h1>
+<div id="grids">
+<svg %{attributes} 
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+%{style}
+%{content}
+
+</svg>
+</div>
+
+<script>
+  var grids = document.querySelectorAll('.grid');
+  var i = 0;
+  const count = grids.length;
+
+  
+  grids.forEach((e) => e.style.display = 'none')
+  setInterval(() => {
+    grids[i].style.display = 'none';
+    i = (i + 1);
+    if (i >= count) i = 0;  
+    grids[i].style.display = 'block';
+  }, 1000);
+
+</script>
+</body>
+</html>

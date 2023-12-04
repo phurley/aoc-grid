@@ -24,8 +24,9 @@ module Aoc
       end
     end
 
-    def to_svg_object(grid_size: 10, margin: 10)
-      Victor::SVG.new(width: (@width * grid_size) + (margin * 2),
+    def to_svg_object(grid_size: 10, margin: 10, klass: "grid", id: nil)
+      Victor::SVG.new(class: klass, id:,
+                      width: (@width * grid_size) + (margin * 2),
                       height: (@height * grid_size) + (margin * 2)).tap do |svg|
         width.times do |x|
           height.times do |y|
@@ -35,8 +36,8 @@ module Aoc
       end
     end
 
-    def to_svg(fname, grid_size: 10, margin: 10)
-      svg = to_svg_object(grid_size:, margin:)
+    def to_svg(fname, grid_size: 10, margin: 10, klass: "grid", id: nil)
+      svg = to_svg_object(grid_size:, margin:, class: klass, id:)
       svg.save(fname)
     end
 
