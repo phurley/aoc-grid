@@ -29,6 +29,24 @@ module Aoc
 
       []
     end
+
+    def self.visit(start, directions)
+      options = start.restricted_neighbors(directions).select { |pos| block_given? ? yield(pos) : true }
+      visited = Set.new
+      visited.add(start)
+
+      while options.any?
+        node = options.shift
+        next if visited.include?(node)
+
+        visited.add(node)
+        options += node.restricted_neighbors(directions).select do |pos|
+          !visited.include?(pos) && (block_given? ? yield(pos) : true)
+        end
+      end
+
+      visited
+    end
     # rubocop:enable Metrics/PerceivedComplexity
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity
