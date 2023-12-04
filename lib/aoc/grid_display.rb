@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "victor"
+
 require_relative "cursor"
 require_relative "bfs"
 
@@ -20,6 +22,28 @@ module Aoc
       @grid.reduce("") do |acc, row|
         "#{acc}#{row.reduce("") { |acc2, col| acc2 + col.to_s }}\n"
       end
+    end
+
+    def to_svg_object(grid_size: 10, margin: 10)
+      Victor::SVG.new(width: (@width * grid_size) + (margin * 2),
+                      height: (@height * grid_size) + (margin * 2)).tap do |svg|
+        width.times do |x|
+          height.times do |y|
+            svg_place_item(svg, cursor(x, y), grid_size, margin)
+          end
+        end
+      end
+    end
+
+    def to_svg(fname, grid_size: 10, margin: 10)
+      svg = to_svg_object(grid_size:, margin:)
+      svg.save(fname)
+    end
+
+    private
+
+    def svg_place_item(svg, cursor, grid_size, margin)
+      svg.text cursor.to_s, x: (cursor.x * grid_size) + margin, y: (cursor.y * grid_size) + margin, font_size: grid_size
     end
   end
 end

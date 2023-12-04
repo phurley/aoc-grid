@@ -61,27 +61,32 @@ module Aoc
     end
 
     def each_row
-      @grid.each_with_index do |row, y|
-        return to_enum(:each_row) unless block_given?
+      return to_enum(:each_row) unless block_given?
 
-        yield row, y
+      height.times do |y|
+        yield Array.new(width) { |x| cursor(x, y) }
       end
     end
 
-    def each_column(&)
+    def each_column
       return to_enum(:each_column) unless block_given?
 
       width.times do |x|
-        height.times do |y|
-          yield cursor(x, y)
-        end
+        yield Array.new(height) { |y| cursor(x, y) }
       end
     end
 
     def find_horizontal_regions(regex)
-      each_row.map do |row, y|
-        row.map.with_index { |_ch, x| cursor(x, y) }
-           .chunk { |cursor| !cursor.to_s.match(regex).nil? }
+      each_row.map do |row|
+        row.chunk { |cursor| !cursor.to_s.match(regex).nil? }
+           .filter { |match, _cursors| match }
+           .map { |_match, cursors| Region.new(cursors) }
+      end.flatten
+    end
+
+    def find_vertical_regions(regex)
+      each_column.map do |row|
+        row.chunk { |cursor| !cursor.to_s.match(regex).nil? }
            .filter { |match, _cursors| match }
            .map { |_match, cursors| Region.new(cursors) }
       end.flatten

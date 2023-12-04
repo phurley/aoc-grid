@@ -60,6 +60,7 @@ GEM
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
     unicode-display_width (2.5.0)
+    victor (0.3.4)
 
 PLATFORMS
   arm64-darwin-21
@@ -72,6 +73,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rake
   rubocop-rspec
+  victor
 
 BUNDLED WITH
    2.4.7
