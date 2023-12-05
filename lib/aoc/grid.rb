@@ -4,6 +4,7 @@ require_relative "grid_base"
 require_relative "grid_display"
 require_relative "cursor"
 require_relative "region"
+require_relative "bounding_box"
 require_relative "bfs"
 require_relative "version"
 

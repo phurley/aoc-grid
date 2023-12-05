@@ -30,7 +30,11 @@ module Aoc
     end
 
     def <=>(other)
-      [@x, @y] <=> [other.x, other.y]
+      [@x, @y] <=> if other.is_a?(Cursor)
+                     [other.x, other.y]
+                   else
+                     [other[0], other[1]]
+                   end
     end
 
     def eql?(other)

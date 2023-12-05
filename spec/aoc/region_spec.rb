@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe Aoc::Region do
   subject(:region) { described_class.new([grid.cursor(0, 0)]) }
 
-  let(:grid) { Aoc::Grid.new(10, 10, default: ".") }
+  let(:grid) { Aoc::Grid.from_file("spec/fixtures/square.txt") }
 
   context "with a basic grid" do
     it "can be created" do
@@ -41,6 +41,24 @@ RSpec.describe Aoc::Region do
       region2 = described_class.new([grid.cursor(1, 1)])
       region3 = region.merge(region2)
       expect(region3.size).to eq(2)
+    end
+
+    it "can find a bounding box" do
+      region = described_class.new([grid.cursor(2, 2), grid.cursor(6, 3), grid.cursor(2, 5)])
+      bound_box = region.bounding_box
+
+      expect(bound_box.top).to eq(2)
+      expect(bound_box.bottom).to eq(5)
+      expect(bound_box.left).to eq(2)
+      expect(bound_box.right).to eq(6)
+    end
+
+    it "can be filled" do
+      region = Aoc::BoundingBox.new(2, 2, 6, 6).to_region(grid)
+      region.fill!(from: " ", to: "#")
+      expect(grid[1, 1]).to eq(" ")
+      expect(grid[2, 2]).to eq("X")
+      expect(grid[3, 3]).to eq("#")
     end
   end
 end

@@ -30,18 +30,18 @@ module Aoc
       []
     end
 
-    def self.visit(start, directions)
-      options = start.restricted_neighbors(directions).select { |pos| block_given? ? yield(pos) : true }
+    def self.visit(start, directions = Aoc::Cursor::DIRECTIONS)
+      options = [start]
       visited = Set.new
-      visited.add(start)
 
       while options.any?
         node = options.shift
         next if visited.include?(node)
+        next if block_given? && !yield(node)
 
         visited.add(node)
         options += node.restricted_neighbors(directions).select do |pos|
-          !visited.include?(pos) && (block_given? ? yield(pos) : true)
+          block_given? ? yield(pos) : true
         end
       end
 
