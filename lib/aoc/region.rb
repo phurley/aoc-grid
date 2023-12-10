@@ -1,17 +1,22 @@
-# frozen_string_literal: true
-
 module Aoc
   # A collection of cursors
   class Region
     include Comparable
 
     def initialize(cursors)
-      @region = cursors.sort
+      @region = Set.new(cursors)
+    end
+
+    def grid
+      @region.first&.grid
     end
 
     def add!(cursor)
-      @region << cursor
-      @region.sort!
+      @region.add(cursor)
+    end
+
+    def to_set
+      @region
     end
 
     def <=>(other)
@@ -19,7 +24,7 @@ module Aoc
     end
 
     def eql?(other)
-      @region.eql?(other.to_a)
+      @region.eql?(other.to_set)
     end
 
     def hash
@@ -27,7 +32,7 @@ module Aoc
     end
 
     def neighbors(wrap: false)
-      (@region.flat_map { |cursor| cursor.neighbors(wrap:) }.uniq - @region).sort
+      Set.new(@region.flat_map { |cursor| cursor.neighbors(wrap:) }) - @region.to_a
     end
 
     def include?(cursor)
@@ -39,19 +44,19 @@ module Aoc
     end
 
     def to_a
-      @region
-    end
-
-    def to_s
-      @region.map(&:to_s).join
+      @region.to_a
     end
 
     def merge(other)
-      Region.new(@region | other.to_a)
+      Region.new(@region.clone.merge(other.to_set))
     end
 
     def clone
-      Region.new(@region.map(&:clone))
+      Region.new(@region)
+    end
+
+    def -(other)
+      Region.new(@region - other.to_set)
     end
 
     def bounding_box
@@ -79,15 +84,16 @@ module Aoc
       grid = @region.first.grid
 
       # find interior (by BFS exterior around bounding box)
-      exterior = []
+      exterior = Set.new
       (bb.top..bb.bottom).each do |y|
         [bb.left, bb.right].each do |x|
           next if exterior.include?([x, y])
+          next unless from === grid[x, y]
 
-          BFS.visit(grid.cursor(x, y)) { |cursor| from === cursor.to_s && bb.include?(cursor) }.each do |pos|
+          BFS.visit(grid.cursor(x, y)) { |cursor| from === cursor.get && bb.include?(cursor) }.each do |pos|
             next if exterior.include?(pos)
 
-            exterior << pos
+            exterior.add(pos)
           end
         end
       end
@@ -105,5 +111,33 @@ module Aoc
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
+
+    def apply(fn)
+      @region.each { |cursor| cursor.set(fn.call(cursor)) }
+    end
+
+    def clear_non_region(value: " ")
+      grid = @region.first.grid
+      bb = bounding_box
+      (bb.top..bb.bottom).each do |y|
+        (bb.left..bb.right).each do |x|
+          grid[x, y] = value unless @region.include?(grid.cursor(x, y))
+        end
+      end
+    end
+
+    def to_s
+      result = ""
+      grid = @region.first.grid
+      bb = bounding_box
+      (bb.top..bb.bottom).each do |y|
+        (bb.left..bb.right).each do |x|
+          result << grid[x, y]
+        end
+        result << "\n"
+      end
+
+      result.chomp
+    end
   end
 end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    aoc-grid (0.2.0)
+    aoc-grid (0.3.0)
       victor (~> 0.3.4)
 
 GEM

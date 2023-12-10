@@ -3,7 +3,9 @@
 require_relative "cursor"
 require_relative "bfs"
 
+# Wrapper for all Advent of Code tools
 module Aoc
+  include Enumerable
   # A grid is a two dimensional array of values.  The grid is indexed by
   class Grid
     attr_reader :width, :height
@@ -29,6 +31,30 @@ module Aoc
 
       Grid.new(width, height) do |x, y|
         lines[y][x]
+      end
+    end
+
+    def inflate
+      Grid.new((width * 2) + 1, (height * 2) + 1) do |x, y|
+        if x.odd? && y.odd?
+          at(x / 2, y / 2)
+        else
+          block_given? ? yield(x, y) : " "
+        end
+      end
+    end
+
+    def deflate
+      Grid.new(width / 2, height / 2) do |x, y|
+        at((x * 2) + 1, (y * 2) + 1)
+      end
+    end
+
+    def each
+      @grid.each_with_index do |row, y|
+        row.each_with_index do |_value, x|
+          yield Cursor.new(self, x, y)
+        end
       end
     end
 
@@ -58,58 +84,6 @@ module Aoc
       raise Aoc::Error, "Invalid coordinate #{x},#{y}" unless valid?(x, y)
 
       Cursor.new(self, x, y)
-    end
-
-    def each_row
-      return to_enum(:each_row) unless block_given?
-
-      height.times do |y|
-        yield Array.new(width) { |x| cursor(x, y) }
-      end
-    end
-
-    def each_column
-      return to_enum(:each_column) unless block_given?
-
-      width.times do |x|
-        yield Array.new(height) { |y| cursor(x, y) }
-      end
-    end
-
-    def find_horizontal_regions(regex)
-      each_row.map do |row|
-        row.chunk { |cursor| !cursor.to_s.match(regex).nil? }
-           .filter { |match, _cursors| match }
-           .map { |_match, cursors| Region.new(cursors) }
-      end.flatten
-    end
-
-    def find_vertical_regions(regex)
-      each_column.map do |row|
-        row.chunk { |cursor| !cursor.to_s.match(regex).nil? }
-           .filter { |match, _cursors| match }
-           .map { |_match, cursors| Region.new(cursors) }
-      end.flatten
-    end
-
-    def find_cursors(regex)
-      cursors = []
-      @grid.each_with_index do |row, y|
-        row.each_with_index do |ch, x|
-          cursors << cursor(x, y) if ch.match(regex)
-        end
-      end
-      cursors
-    end
-
-    def add_path(path)
-      num = 0
-      clone.tap do |result|
-        path.each do |cursor|
-          result[cursor.x, cursor.y] = (num % 10).to_s
-          num += 1
-        end
-      end
     end
   end
 end

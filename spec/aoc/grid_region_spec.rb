@@ -2,21 +2,24 @@
 
 require "spec_helper"
 
-PUZZLE_INPUT = <<~INPUT
-  467..114..
-  ...*......
-  ..35..633.
-  ......#...
-  617*......
-  .....+.58.
-  ..592.....
-  ......755.
-  ...$.*....
-  .664.598..
-INPUT
-
 RSpec.describe Aoc::Grid do
-  subject(:grid) { described_class.from_string(PUZZLE_INPUT) }
+  subject(:grid) { described_class.from_string(puzzle_input) }
+
+  let(:puzzle_input) do
+    input = <<~INPUT
+      467..114..
+      ...*......
+      ..35..633.
+      ......#...
+      617*......
+      .....+.58.
+      ..592.....
+      ......755.
+      ...$.*....
+      .664.598..
+    INPUT
+    input.each_line.map(&:strip).join("\n")
+  end
 
   context "with a puzzle grid" do
     let(:numbers) { subject.find_horizontal_regions(/\d/) }
@@ -47,7 +50,7 @@ RSpec.describe Aoc::Grid do
     it "can merge regions" do
       r1, r2 = numbers.take(2)
       merged = r1.merge(r2)
-      expect(merged.to_s).to eq("46")
+      expect(merged.to_a.join).to eq("46")
     end
   end
 end
