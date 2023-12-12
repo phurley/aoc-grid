@@ -23,6 +23,18 @@ module Aoc
       end
     end
 
+    def add_row(pos, default: " ")
+      @grid.insert(pos, Array.new(width, default))
+      @height = @grid.size
+    end
+
+    def add_column(pos, default: " ")
+      @grid.each do |row|
+        row.insert(pos, default)
+      end
+      @width = @grid.first.size
+    end
+
     def find_horizontal_regions(regex)
       each_row.map do |row|
         row.chunk { |cursor| !cursor.get.match(regex).nil? }

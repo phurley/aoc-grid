@@ -50,5 +50,15 @@ RSpec.describe Aoc::Cursor do
     it "can prevent illegal moves" do
       expect { cursor.move(:left, wrap: false) }.to raise_error(Aoc::Error)
     end
+
+    it "can calculate manhattan distance" do
+      cursor2 = grid.cursor(3, 4)
+      expect(cursor.manhattan_distance(cursor2)).to eq(7)
+    end
+
+    it "can calculate distance" do
+      cursor2 = grid.cursor(3, 4)
+      expect(cursor.distance(cursor2)).to eq(5)
+    end
   end
 end

@@ -39,5 +39,21 @@ RSpec.describe Aoc::Grid do
       expect(grid.valid?(10, 10)).to be false
       expect(grid.valid?(-1, -1)).to be false
     end
+
+    it "can add a row" do
+      expect(grid.height).to eq(10)
+      expect(grid[0, 3]).to eq(".")
+      grid.add_row(3, default: "X")
+      expect(grid[0, 3]).to eq("X")
+      expect(grid.height).to eq(11)
+    end
+
+    it "can add a column" do
+      expect(grid.width).to eq(10)
+      expect(grid[3, 0]).to eq(".")
+      grid.add_column(3, default: "X")
+      expect(grid[3, 0]).to eq("X")
+      expect(grid.width).to eq(11)
+    end
   end
 end
