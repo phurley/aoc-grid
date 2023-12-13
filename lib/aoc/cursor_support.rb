@@ -5,10 +5,6 @@ require "set"
 module Aoc
   # A grid is a two dimensional array of values.  The grid is indexed by
   class Cursor
-    def to_s
-      @grid[x, y].to_s
-    end
-
     def up
       @grid.cursor(x, y - 1)
     end

@@ -5,9 +5,9 @@ require_relative "bfs"
 
 # Wrapper for all Advent of Code tools
 module Aoc
-  include Enumerable
   # A grid is a two dimensional array of values.  The grid is indexed by
   class Grid
+    include Enumerable
     attr_reader :width, :height
 
     def initialize(width, height, default: nil, &block)
@@ -51,6 +51,8 @@ module Aoc
     end
 
     def each
+      return to_enum(:each) unless block_given?
+
       @grid.each_with_index do |row, y|
         row.each_with_index do |_value, x|
           yield Cursor.new(self, x, y)
@@ -84,6 +86,22 @@ module Aoc
       raise Aoc::Error, "Invalid coordinate #{x},#{y}" unless valid?(x, y)
 
       Cursor.new(self, x, y)
+    end
+
+    def column(col)
+      @grid.map { |row| row[col] }
+    end
+
+    def columns(start, len)
+      start.upto(start + len - 1).map { |col| column(col) }
+    end
+
+    def row(row)
+      @grid[row]
+    end
+
+    def rows(start, len)
+      start.upto(start + len - 1).map { |row| row(row) }
     end
   end
 end

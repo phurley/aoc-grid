@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe Aoc::SparseGrid do
   subject(:grid) { described_class.new(10, 10, default: ".") }
 
-  context "with a basic grid" do
+  context "with a sparse grid" do
     it "has a width" do
       expect(grid.width).to eq(10)
     end
@@ -50,6 +50,10 @@ RSpec.describe Aoc::SparseGrid do
       grid.add_column(3, default: "X")
       expect(grid[3, 0]).to eq("X")
       expect(grid.width).to eq(11)
+    end
+
+    it "is enumerable" do
+      expect(grid.each).to be_a(Enumerator)
     end
   end
 end

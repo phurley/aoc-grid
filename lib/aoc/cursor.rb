@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "set"
-
 module Aoc
   # A grid is a two dimensional array of values.  The grid is indexed by
   class Cursor
@@ -33,6 +31,7 @@ module Aoc
       [@x, @y] <=> if other.is_a?(Cursor)
                      [other.x, other.y]
                    else
+                     puts "other is not a cursor #{other.class} - #{other.inspect}"
                      [other[0], other[1]]
                    end
     end
@@ -104,6 +103,16 @@ module Aoc
 
     def get
       @grid[x, y]
+    end
+
+    def to_s
+      value = get
+
+      if !!value == value
+        value ? "█" : " "
+      else
+        value
+      end
     end
 
     def distance(other)

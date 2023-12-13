@@ -5,9 +5,9 @@ require_relative "bfs"
 
 # Module for all Advent of Code tools
 module Aoc
-  include Enumerable
   # A grid is a two dimensional array of values.  The grid is indexed by
   class Grid
+    include Enumerable
     def each_row
       return to_enum(:each_row) unless block_given?
 

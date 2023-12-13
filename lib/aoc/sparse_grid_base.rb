@@ -5,12 +5,12 @@ require_relative "bfs"
 
 # Wrapper for all Advent of Code tools
 module Aoc
-  include Enumerable
   # A grid is a two dimensional array of values.  The grid is indexed by
   class SparseGrid
+    include Enumerable
     attr_reader :width, :height, :default
 
-    def initialize(width, height, default: nil) # rubocop:disable Metrics/MethodLength
+    def initialize(width, height, default: nil)
       @width = width
       @height = height
       @default = default
@@ -56,6 +56,8 @@ module Aoc
     end
 
     def each
+      return to_enum(:each) unless block_given?
+
       width.times do |x|
         height.times do |y|
           yield Cursor.new(self, x, y)
