@@ -7,7 +7,7 @@ require_relative "bfs"
 module Aoc
   include Enumerable
   # A grid is a two dimensional array of values.  The grid is indexed by
-  class Grid
+  class SparseGrid
     def each_row
       return to_enum(:each_row) unless block_given?
 
@@ -25,15 +25,27 @@ module Aoc
     end
 
     def add_row(pos, default: " ")
-      @grid.insert(pos, Array.new(width, default))
-      @height = @grid.size
+      @height += 1
+      @grid = @grid.to_h do |(x, y), v|
+        [x, y > pos ? y + 1 : y, v]
+      end
+      return unless default != @default
+
+      width.times do |x|
+        @grid.store([x, pos], default)
+      end
     end
 
     def add_column(pos, default: " ")
-      @grid.each do |row|
-        row.insert(pos, default)
+      @width += 1
+      @grid = @grid.to_h do |(x, y), v|
+        [x > pos ? x + 1 : x, y, v]
       end
-      @width = @grid.first.size
+      return unless default != @default
+
+      height.times do |y|
+        @grid.store([pos, y], default)
+      end
     end
 
     def find_horizontal_regions(regex)
@@ -53,13 +65,7 @@ module Aoc
     end
 
     def find_cursors(cond)
-      cursors = []
-      @grid.each_with_index do |row, y|
-        row.each_with_index do |val, x|
-          cursors << cursor(x, y) if cond === val
-        end
-      end
-      cursors
+      @grid.filter_map { |(x, y), val| cursor(x, y) if cond === val }
     end
 
     def follow(start, stop)

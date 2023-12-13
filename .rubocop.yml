@@ -14,6 +14,12 @@ Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
 
+Style/CaseEquality:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
 Layout/LineLength:
   Max: 120
 
