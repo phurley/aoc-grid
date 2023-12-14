@@ -8,7 +8,7 @@ module Aoc
   # A grid is a two dimensional array of values.  The grid is indexed by
   class Grid
     include Enumerable
-    attr_reader :width, :height
+    attr_reader :width, :height, :grid
 
     def initialize(width, height, default: nil, &block)
       @width = width
@@ -18,6 +18,14 @@ module Aoc
               else
                 Array.new(height) { Array.new(width, default) }
               end
+    end
+
+    def hash
+      @grid.hash
+    end
+
+    def eql?(other)
+      grid.eql?(other.grid)
     end
 
     def self.from_file(fname)
