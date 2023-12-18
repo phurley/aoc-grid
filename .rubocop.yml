@@ -23,6 +23,9 @@ Metrics/MethodLength:
 Layout/LineLength:
   Max: 120
 
+Metrics/ClassLength:
+  Enabled: false
+  
 Naming/MethodParameterName:
   Enabled: true
   AllowedNames:

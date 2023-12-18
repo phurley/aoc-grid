@@ -21,6 +21,19 @@ module Aoc
       down_right: [1, 1]
     }.freeze
 
+    MOVE_ALIASES = { # rubocop:disable Style/MutableConstant
+      north: :up,
+      south: :down,
+      east: :right,
+      west: :left,
+      north_east: :up_right,
+      north_west: :up_left,
+      south_east: :down_right,
+      south_west: :down_left
+    }
+    MOVE_ALIASES.default_proc = proc { |_, k| k }
+    MOVE_ALIASES.freeze
+
     def initialize(grid, x, y)
       @grid = grid
       @x = x
@@ -49,6 +62,7 @@ module Aoc
     end
 
     def safe_move(direction, wrap: false)
+      direction = MOVE_ALIASES[direction]
       raise Aoc::Error, "Invalid direction #{direction}" unless DIRECTIONS.include?(direction)
 
       dx, dy = DELTAS[direction]
@@ -72,6 +86,7 @@ module Aoc
     end
 
     def move!(direction, wrap: false)
+      direction = MOVE_ALIASES[direction]
       raise Aoc::Error, "Invalid direction #{direction}" unless DIRECTIONS.include?(direction)
 
       dx, dy = DELTAS[direction]

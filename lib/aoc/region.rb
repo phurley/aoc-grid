@@ -1,6 +1,6 @@
 module Aoc
   # A collection of cursors
-  class Region
+  class Region # rubocop:disable Metrics/ClassLength
     include Comparable
 
     def initialize(cursors)
@@ -74,10 +74,8 @@ module Aoc
     end
 
     # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/PerceivedComplexity
-    # rubocop:disable Style/CaseEquality
     def fill!(from: " ", to: "#")
       # find bounding box
       bb = bounding_box
@@ -98,11 +96,16 @@ module Aoc
         end
       end
 
+      pp exterior
       interior = @region - exterior
       # fill interior
       interior.each do |cursor|
-        BFS.visit(cursor) { |c| from === c.to_s }.each do |pos|
-          grid[pos.x, pos.y] = to
+        cursor.neighbors.each do |neighbor|
+          next if exterior.include?(neighbor)
+
+          BFS.visit(neighbor) { |c| from === c.get }.each do |pos|
+            grid[pos.x, pos.y] = to
+          end
         end
       end
     end

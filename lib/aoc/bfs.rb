@@ -7,7 +7,6 @@ module Aoc
   class BFS
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/PerceivedComplexity
     def self.solve(from, to, directions)
       options = from.restricted_neighbors(directions).select { |pos| yield(pos, [from]) }.map { |pos| [from, pos] }

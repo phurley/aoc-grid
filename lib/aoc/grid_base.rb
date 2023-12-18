@@ -20,6 +20,12 @@ module Aoc
               end
     end
 
+    def clone
+      Grid.new(width, height) do |x, y|
+        at(x, y)
+      end
+    end
+
     def hash
       @grid.hash
     end
@@ -38,7 +44,11 @@ module Aoc
       height = lines.size
 
       Grid.new(width, height) do |x, y|
-        lines[y][x]
+        if block_given?
+          yield lines[y][x]
+        else
+          lines[y][x]
+        end
       end
     end
 

@@ -18,6 +18,14 @@ module Aoc
       end
     end
 
+    def paint_path(path)
+      temp = clone
+      path.each do |cursor|
+        temp[cursor.x, cursor.y] = "*"
+      end
+      temp.to_s
+    end
+
     def to_s
       @grid.reduce("") do |acc, row|
         "#{acc}#{row.reduce("") { |acc2, col| acc2 + col.to_s }}\n"
@@ -37,7 +45,7 @@ module Aoc
     end
 
     def to_svg(fname, grid_size: 10, margin: 10, klass: "grid", id: nil)
-      svg = to_svg_object(grid_size:, margin:, class: klass, id:)
+      svg = to_svg_object(grid_size:, margin:, klass:, id:)
       svg.save(fname)
     end
 
