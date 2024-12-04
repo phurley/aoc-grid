@@ -15,4 +15,6 @@ group :development, :test do
   gem "rubocop-performance"
   gem "rubocop-rake"
   gem "rubocop-rspec"
+  gem "ruby-lsp"
+  gem "solargraph"
 end

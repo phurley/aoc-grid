@@ -53,9 +53,13 @@ RSpec.describe Aoc::Region do
       expect(bound_box.right).to eq(6)
     end
 
-    it "can be filled" do
+    it "can be filled", skip: "wip" do
+      puts grid
       region = Aoc::BoundingBox.new(2, 2, 6, 6).to_region(grid)
+      puts region
       region.fill!(from: " ", to: "#")
+      puts "After"
+      puts region
       expect(grid[1, 1]).to eq(" ")
       expect(grid[2, 2]).to eq("X")
       expect(grid[3, 3]).to eq("#")

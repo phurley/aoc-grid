@@ -29,7 +29,15 @@ module Aoc
       north_east: :up_right,
       north_west: :up_left,
       south_east: :down_right,
-      south_west: :down_left
+      south_west: :down_left,
+      n: :up,
+      s: :down,
+      e: :right,
+      w: :left,
+      ne: :up_right,
+      nw: :up_left,
+      se: :down_right,
+      sw: :down_left
     }
     MOVE_ALIASES.default_proc = proc { |_, k| k }
     MOVE_ALIASES.freeze
@@ -66,6 +74,10 @@ module Aoc
       raise Aoc::Error, "Invalid direction #{direction}" unless DIRECTIONS.include?(direction)
 
       dx, dy = DELTAS[direction]
+      safe_delta(dx, dy, wrap:)
+    end
+
+    def safe_delta(dx, dy, wrap: false)
       new_x = x + dx
       new_y = y + dy
 
@@ -76,6 +88,20 @@ module Aoc
       return nil unless @grid.valid?(new_x, new_y)
 
       Cursor.new(@grid, new_x, new_y)
+    end
+
+    def path(directions, wrap: false)
+      pos = [0, 0]
+      directions.map { |d| MOVE_ALIASES[d] }
+                .map { |direction| DELTAS.include?(direction) ? DELTAS[direction] : direction }
+                .map { |(dx, dy)| pos = [pos.first + dx, pos.last + dy] }
+                .map { |(dx, dy)| safe_delta(dx, dy, wrap:) }
+    end
+
+    def offset_path(directions, wrap: false)
+      directions.map { |d| MOVE_ALIASES[d] }
+                .map { |direction| DELTAS.include?(direction) ? DELTAS[direction] : direction }
+                .map { |(dx, dy)| safe_delta(dx, dy, wrap:) }
     end
 
     def move(direction, wrap: false)

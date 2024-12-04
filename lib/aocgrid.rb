@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "aocgrid/version"
+require_relative "aoc/version"
 
 module Aoc
   class Error < StandardError; end
-  # Your code goes here...
 end
 
-require_relative "aocgrid/grid"
+require_relative "aoc/grid"
